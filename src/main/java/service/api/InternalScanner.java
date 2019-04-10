@@ -83,6 +83,8 @@ public class InternalScanner {
             Double t = nextDouble(invalidInputMessage);
             if (t == null || validate.test(t)) {
                 return t;
+            }else {
+                System.out.println(invalidInputMessage);
             }
         }
     }
@@ -92,9 +94,34 @@ public class InternalScanner {
             Integer t = nextInteger(invalidInputMessage);
             if (t == null || validate.test(t)) {
                 return t;
+            }else {
+                System.out.println(invalidInputMessage);
             }
         }
     }
+
+    public Integer nextInteger(String invalidInputMessage, Predicate<Integer> validate, String... possibleMatches) {
+        while (true) {
+            Integer t = nextInteger(invalidInputMessage);
+            if (t == null || (validate.test(t)) && Arrays.asList(possibleMatches).contains(t)) {
+                return t;
+            }else {
+                System.out.println(invalidInputMessage);
+            }
+        }
+    }
+
+    public Integer nextInteger(String invalidInputMessage, String... possibleMatches) {
+        while (true) {
+            Integer t = nextInteger(invalidInputMessage);
+            if (t == null ||  Arrays.asList(possibleMatches).contains(""+t)) {
+                return t;
+            }else {
+                System.out.println(invalidInputMessage);
+            }
+        }
+    }
+
 
     /**
      * if the p2.api.IProgram class implements the IStopable Interface is true, "stop" can not be used as a input string because it is used to stop the p2.api.IProgram.
