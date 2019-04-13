@@ -150,6 +150,20 @@ public class InternalScanner {
         }
     }
 
+    public String next(String invalidInputMessage, Predicate<String> validate, String... possibleMatches) {
+        while (true) {
+            String s = next(invalidInputMessage, possibleMatches);
+
+            if (s == null) {
+                return null;
+            }
+
+            if (validate.test(s)) {
+                return s;
+            }
+        }
+    }
+
 
     /**
      * This Method is used for selection of a specific Option from a List of Options.
