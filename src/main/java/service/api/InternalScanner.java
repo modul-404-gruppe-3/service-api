@@ -11,7 +11,7 @@ import java.util.function.Predicate;
  * this is a implementation if the java.util.Scanner that is capable of getting a date from a pattern,
  * and is also able to handle the implementaiton of {@Link IStopable}.
  */
-public class InternalScanner {
+public class InternalScanner implements IScanner {
     private final Scanner scanner;
     private final IProgram IProgram;
 
