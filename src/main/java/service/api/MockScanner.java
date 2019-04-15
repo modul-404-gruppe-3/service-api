@@ -1,80 +1,106 @@
 package service.api;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Stack;
 import java.util.function.Predicate;
 
 public class MockScanner implements IScanner {
-    Stack<Object> stack;
+    Stack<String> stack;
+    private AbstractProgram program;
 
-    public MockScanner(Object... objects) {
+    public MockScanner(AbstractProgram program, String... objects) {
+        this.program = program;
         this.stack = new Stack<>();
         for (int i = objects.length - 1; i >= 0; i--) {
             if (objects[i] == null) {
-                this.stack.push(new NullObject());
+                this.stack.push("null");
             }else {
                 this.stack.push(objects[i]);
             }
         }
     }
 
+
     @Override
     public Double nextDouble(String invalidInputMessage) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+            stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (Double) stack.pop();
+        return Double.parseDouble(stack.pop());
     }
 
     @Override
     public Integer nextInteger(String invalidInputMessage) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+                stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (Integer) stack.pop();
+        return Integer.parseInt(stack.pop());
     }
 
     @Override
     public Double nextDouble(String invalidInputMessage, Predicate<Double> validate) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+                stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (Double) stack.pop();
+        return Double.parseDouble(stack.pop());
     }
 
     @Override
     public Integer nextInteger(String invalidInputMessage, Predicate<Integer> validate) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+                stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (Integer) stack.pop();
+        return Integer.parseInt(stack.pop());
     }
 
     @Override
     public Integer nextInteger(String invalidInputMessage, Predicate<Integer> validate, String... possibleMatches) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+                stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (Integer) stack.pop();
+        return Integer.parseInt(stack.pop());
     }
 
     @Override
     public Integer nextInteger(String invalidInputMessage, String... possibleMatches) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+            stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (Integer) stack.pop();
+
+        return Integer.parseInt(stack.pop());
     }
 
     @Override
     public String next() {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+            stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
@@ -83,40 +109,50 @@ public class MockScanner implements IScanner {
 
     @Override
     public String next(String invalidInputMessage, Predicate<String> validate) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+            stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (String) stack.pop();
+        return stack.pop();
     }
 
     @Override
     public String next(String invalidInputMessage, Predicate<String> validate, String... possibleMatches) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+            stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (String) stack.pop();
+        return stack.pop();
     }
 
     @Override
     public String next(String invalidInputMessage, String... possibleMatches) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+            stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (String) stack.pop();
+        return stack.pop();
     }
 
     @Override
     public LocalDate getDate(String pattern, String invalidInputMessage) {
-        if (stack.peek() instanceof NullObject) {
+        System.out.println("peek: "+stack.peek());
+
+        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
+            stack.peek().equalsIgnoreCase("null")) {
             stack.pop();
             return null;
         }
-        return (LocalDate) stack.pop();
-    }
-    private class NullObject {
-    }
 
+        return LocalDate.parse(stack.pop(), DateTimeFormatter.ofPattern(pattern));
+    }
 }

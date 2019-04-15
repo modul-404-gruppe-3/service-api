@@ -13,14 +13,14 @@ import java.util.function.Predicate;
  */
 public class InternalScanner implements IScanner {
     private final Scanner scanner;
-    private final IProgram IProgram;
+    private final AbstractProgram IProgram;
 
     /**
      *
      * @param scanner the scanner object that will be used for all Operations in this Scanner
      * @param IProgram the program that will be checked on for the IStopable Interface.
      */
-    public InternalScanner(Scanner scanner, IProgram IProgram) {
+    public InternalScanner(Scanner scanner, AbstractProgram IProgram) {
         this.scanner = scanner;
         this.IProgram = IProgram;
     }
@@ -163,7 +163,6 @@ public class InternalScanner implements IScanner {
             }
         }
     }
-
 
     /**
      * This Method is used for selection of a specific Option from a List of Options.
