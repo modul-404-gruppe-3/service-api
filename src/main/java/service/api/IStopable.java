@@ -1,7 +1,7 @@
 package service.api;
 
 /**
- * This interface is used to determin if a {@link IProgram} can be stoped.
+ * This interface is used to determin if a {@link AbstractProgram} can be stoped.
  * If this Interface is implemented it means that the p2.api.IProgram can be stoped and the Stop method, by default this prints
  * the Content: "shuting down program".
  *

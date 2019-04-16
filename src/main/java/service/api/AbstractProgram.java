@@ -12,6 +12,10 @@ public abstract class AbstractProgram {
         scanner = null;
     }
 
+
+    /**
+     * this constructor is for unit tests so you can fake user inputs.
+     */
     public AbstractProgram(String... project) {
         if (project == null) {
             scanner = null;
@@ -21,6 +25,9 @@ public abstract class AbstractProgram {
         scanner = new MockScanner(this, project);
     }
 
+    /**
+     * this constructor is for unit tests so you can fake user inputs.
+     */
     public AbstractProgram(MockScanner mockScanner) {
         if (mockScanner == null) {
             scanner = null;
@@ -31,7 +38,7 @@ public abstract class AbstractProgram {
     }
 
     /**
-     * every p2.api.IProgram needs to have some sort of implementation of this Method. This is the method that is executed
+     * every AbstractProgram needs to have some sort of implementation of this Method. This is the method that is executed
      * in the Main Method.
      */
     public abstract void execute();

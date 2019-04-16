@@ -89,6 +89,12 @@ public class InternalScanner implements IScanner {
         }
     }
 
+    /**
+     * @param invalidInputMessage the message that will be sent when the wrong input is sent.
+     * @param validate the function that will be called and if this function returns
+     *                 true on the user input the value will be returned.
+     * @return user input. null of IStopable is implemented and the user types stop.
+     */
     public Integer nextInteger(String invalidInputMessage, Predicate<Integer> validate) {
         while (true) {
             Integer t = nextInteger(invalidInputMessage);
@@ -100,6 +106,13 @@ public class InternalScanner implements IScanner {
         }
     }
 
+    /**
+     * @param invalidInputMessage the message that will be sent when the wrong input is sent.
+     * @param validate the function that will be called and if this function returns
+     *                 true on the user input the value will be returned.
+     * @param possibleMatches the user input must be in this list.
+     * @return user input. null of IStopable is implemented and the user types stop.
+     */
     public Integer nextInteger(String invalidInputMessage, Predicate<Integer> validate, String... possibleMatches) {
         while (true) {
             Integer t = nextInteger(invalidInputMessage);
@@ -111,6 +124,11 @@ public class InternalScanner implements IScanner {
         }
     }
 
+    /**
+     * @param invalidInputMessage the message that will be sent when the wrong input is sent.
+     * @param possibleMatches the user input must be in this list.
+     * @return user input. null of IStopable is implemented and the user types stop.
+     */
     public Integer nextInteger(String invalidInputMessage, String... possibleMatches) {
         while (true) {
             Integer t = nextInteger(invalidInputMessage);
@@ -139,6 +157,12 @@ public class InternalScanner implements IScanner {
         return next;
     }
 
+    /**
+     * @param invalidInputMessage the message that will be sent when the wrong input is sent.
+     * @param validate the function that will be called and if this function returns
+     *                 true on the user input the value will be returned.
+     * @return user input. null of IStopable is implemented and the user types stop.
+     */
     public String next(String invalidInputMessage, Predicate<String> validate) {
         while (true) {
             String s = next();
@@ -149,6 +173,14 @@ public class InternalScanner implements IScanner {
             }
         }
     }
+
+    /**
+     * @param invalidInputMessage the message that will be sent when the wrong input is sent.
+     * @param validate the function that will be called and if this function returns
+     *                 true on the user input the value will be returned.
+     * @param possibleMatches the user input must be in this list.
+     * @return user input. null of IStopable is implemented and the user types stop.
+     */
 
     public String next(String invalidInputMessage, Predicate<String> validate, String... possibleMatches) {
         while (true) {
