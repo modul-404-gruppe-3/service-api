@@ -13,7 +13,5 @@ public interface IStopable {
      * you can override the Method in the implementing classes and that specific implementation will be used even if you
      * only have a IStopable Object and not a direct implementation.
      */
-    default void stop() {
-        System.out.println("shuting down program");
-    }
+    default void stop() { }
 }
