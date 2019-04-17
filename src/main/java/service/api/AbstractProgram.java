@@ -1,6 +1,5 @@
 package service.api;
 
-import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Scanner;

@@ -2,6 +2,7 @@ package service.api;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 import java.util.Stack;
 import java.util.function.Predicate;
 
@@ -31,6 +32,21 @@ public class MockScanner implements IScanner {
         }
     }
 
+    /**
+     *
+     * @return the first item on the Stack. Null of program implements IStopable and user enters stop or
+     * if the content of the String is "null".
+     */
+    private String takeFromStack() {
+        System.out.println("peek: "+stack.peek());
+
+        String pop = stack.pop();
+        if (program instanceof IStopable && pop.equalsIgnoreCase("stop") ||
+                pop.equalsIgnoreCase("null")) {
+            return null;
+        }
+        return pop;
+    }
 
     /**
      * @param invalidInputMessage message that will be sent when a input is invalid
@@ -39,14 +55,12 @@ public class MockScanner implements IScanner {
      */
     @Override
     public Double nextDouble(String invalidInputMessage) {
-        System.out.println("peek: "+stack.peek());
-
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-            stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
-            return null;
+        String item = takeFromStack();
+        try {
+            return (item != null) ? Double.parseDouble(item) : null;
+        }catch (Exception ex) {
+            throw new InvalidScannerOutputException(item, invalidInputMessage);
         }
-        return Double.parseDouble(stack.pop());
     }
 
     /**
@@ -56,14 +70,12 @@ public class MockScanner implements IScanner {
      */
     @Override
     public Integer nextInteger(String invalidInputMessage) {
-        System.out.println("peek: "+stack.peek());
-
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-                stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
-            return null;
+        String item = takeFromStack();
+        try {
+            return (item != null) ? Integer.parseInt(item) : null;
+        } catch (NumberFormatException e) {
+            throw new InvalidScannerOutputException(item, invalidInputMessage);
         }
-        return Integer.parseInt(stack.pop());
     }
 
     /**
@@ -73,14 +85,24 @@ public class MockScanner implements IScanner {
      */
     @Override
     public Double nextDouble(String invalidInputMessage, Predicate<Double> validate) {
-        System.out.println("peek: "+stack.peek());
+        String item = takeFromStack();
 
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-                stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
+        try {
+            if ((item != null)) {
+                double v = Double.parseDouble(item);
+
+                if (validate.test(v)) {
+                    return v;
+                }else {
+                    throw new InvalidScannerOutputException(""+v, invalidInputMessage);
+                }
+            } else {
+                return null;
+            }
+        } catch (NumberFormatException e) {
+            System.out.println(invalidInputMessage);
             return null;
         }
-        return Double.parseDouble(stack.pop());
     }
 
     /**
@@ -90,14 +112,18 @@ public class MockScanner implements IScanner {
      */
     @Override
     public Integer nextInteger(String invalidInputMessage, Predicate<Integer> validate) {
-        System.out.println("peek: "+stack.peek());
+        String item = takeFromStack();
+        if ((item != null)) {
+            int i = Integer.parseInt(item);
 
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-                stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
+            if (validate.test(i)) {
+                return i;
+            }else {
+                throw new InvalidScannerOutputException(""+i, invalidInputMessage);
+            }
+        } else {
             return null;
         }
-        return Integer.parseInt(stack.pop());
     }
 
     /**
@@ -107,14 +133,18 @@ public class MockScanner implements IScanner {
      */
     @Override
     public Integer nextInteger(String invalidInputMessage, Predicate<Integer> validate, String... possibleMatches) {
-        System.out.println("peek: "+stack.peek());
+        String item = takeFromStack();
+        if ((item != null)) {
+            int i = Integer.parseInt(item);
 
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-                stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
+            if (validate.test(i) && Arrays.asList(possibleMatches).contains(i+"")) {
+                return i;
+            }else {
+                throw new InvalidScannerOutputException(i+"", invalidInputMessage);
+            }
+        } else {
             return null;
         }
-        return Integer.parseInt(stack.pop());
     }
 
     /**
@@ -124,15 +154,18 @@ public class MockScanner implements IScanner {
      */
     @Override
     public Integer nextInteger(String invalidInputMessage, String... possibleMatches) {
-        System.out.println("peek: "+stack.peek());
+        String item = takeFromStack();
+        if ((item != null)) {
+            int i = Integer.parseInt(item);
 
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-            stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
+            if (Arrays.asList(possibleMatches).contains(i+"")) {
+                return i;
+            }else {
+                throw new InvalidScannerOutputException(i+"", invalidInputMessage);
+            }
+        } else {
             return null;
         }
-
-        return Integer.parseInt(stack.pop());
     }
 
     /**
@@ -141,14 +174,7 @@ public class MockScanner implements IScanner {
      */
     @Override
     public String next() {
-        System.out.println("peek: "+stack.peek());
-
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-            stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
-            return null;
-        }
-        return (String) stack.pop();
+        return takeFromStack();
     }
 
     /**
@@ -158,14 +184,17 @@ public class MockScanner implements IScanner {
      */
     @Override
     public String next(String invalidInputMessage, Predicate<String> validate) {
-        System.out.println("peek: "+stack.peek());
+        String item = takeFromStack();
 
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-            stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
+        if (item == null) {
             return null;
         }
-        return stack.pop();
+
+        if (validate.test(item)) {
+            return item;
+        }else {
+            throw new InvalidScannerOutputException(item, invalidInputMessage);
+        }
     }
 
     /**
@@ -175,14 +204,17 @@ public class MockScanner implements IScanner {
      */
     @Override
     public String next(String invalidInputMessage, Predicate<String> validate, String... possibleMatches) {
-        System.out.println("peek: "+stack.peek());
+        String item = takeFromStack();
 
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-            stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
+        if (item == null) {
             return null;
         }
-        return stack.pop();
+
+        if (validate.test(item) && Arrays.asList(possibleMatches).contains(item)) {
+            return item;
+        }else {
+            throw new InvalidScannerOutputException(item, invalidInputMessage);
+        }
     }
 
     /**
@@ -192,14 +224,17 @@ public class MockScanner implements IScanner {
      */
     @Override
     public String next(String invalidInputMessage, String... possibleMatches) {
-        System.out.println("peek: "+stack.peek());
+        String item = takeFromStack();
 
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-            stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
+        if (item == null) {
             return null;
         }
-        return stack.pop();
+
+        if (Arrays.asList(possibleMatches).contains(item)) {
+            return item;
+        }else {
+            throw new InvalidScannerOutputException(item, invalidInputMessage);
+        }
     }
 
     /**
@@ -209,14 +244,17 @@ public class MockScanner implements IScanner {
      */
     @Override
     public LocalDate getDate(String pattern, String invalidInputMessage) {
-        System.out.println("peek: "+stack.peek());
+        String item = takeFromStack();
 
-        if (program instanceof IStopable && stack.peek().equalsIgnoreCase("stop") ||
-            stack.peek().equalsIgnoreCase("null")) {
-            stack.pop();
+
+        if ((item != null)) {
+            try {
+                return LocalDate.parse(item, DateTimeFormatter.ofPattern(pattern));
+            }catch (Exception ex) {
+                throw new InvalidScannerOutputException(item, invalidInputMessage);
+            }
+        } else {
             return null;
         }
-
-        return LocalDate.parse(stack.pop(), DateTimeFormatter.ofPattern(pattern));
     }
 }
