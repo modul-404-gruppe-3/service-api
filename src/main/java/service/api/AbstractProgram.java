@@ -1,15 +1,16 @@
 package service.api;
 
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.Scanner;
 
 public abstract class AbstractProgram {
-    @Getter
-    public static IScanner scanner;
+    @Setter
+    private static IScanner staticScanner;
 
     public AbstractProgram() {
-        scanner = null;
+        staticScanner = null;
     }
 
 
@@ -18,11 +19,11 @@ public abstract class AbstractProgram {
      */
     public AbstractProgram(String... project) {
         if (project == null) {
-            scanner = null;
+            staticScanner = null;
             return;
         }
 
-        scanner = new MockScanner(this, project);
+        staticScanner = new MockScanner(this, project);
     }
 
     /**
@@ -30,11 +31,11 @@ public abstract class AbstractProgram {
      */
     public AbstractProgram(MockScanner mockScanner) {
         if (mockScanner == null) {
-            scanner = null;
+            staticScanner = null;
             return;
         }
 
-        scanner = mockScanner;
+        staticScanner = mockScanner;
     }
 
     /**
@@ -49,10 +50,10 @@ public abstract class AbstractProgram {
      * @return
      */
     public IScanner getScanner() {
-        if (scanner == null) {
+        if (staticScanner == null) {
             return new InternalScanner(new Scanner(System.in), this);
         }else {
-            return scanner;
+            return staticScanner;
         }
     }
 }
