@@ -100,8 +100,7 @@ public class MockScanner implements IScanner {
                 return null;
             }
         } catch (NumberFormatException e) {
-            System.out.println(invalidInputMessage);
-            return null;
+            throw new InvalidScannerOutputException(item, invalidInputMessage);
         }
     }
 
