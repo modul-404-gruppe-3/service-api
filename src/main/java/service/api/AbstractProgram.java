@@ -1,12 +1,17 @@
 package service.api;
 
+import lombok.AccessLevel;
+import lombok.Getter;
 import lombok.Setter;
 
 import java.util.Scanner;
 
 public abstract class AbstractProgram {
     @Setter
+    @Getter(AccessLevel.PACKAGE)
     private static IScanner staticScanner;
+    @Getter(AccessLevel.PACKAGE)
+    private IScanner currentScanner;
 
     public AbstractProgram() {
         staticScanner = null;
@@ -37,6 +42,8 @@ public abstract class AbstractProgram {
         staticScanner = mockScanner;
     }
 
+
+
     /**
      * every AbstractProgram needs to have some sort of implementation of this Method. This is the method that is executed
      * in the Main Method.
@@ -50,7 +57,8 @@ public abstract class AbstractProgram {
      */
     public IScanner getScanner() {
         if (staticScanner == null) {
-            return new InternalScanner(new Scanner(System.in), this);
+            currentScanner = new InternalScanner(new Scanner(System.in), this);
+            return currentScanner;
         }else {
             return staticScanner;
         }

@@ -13,6 +13,7 @@ import java.util.function.Predicate;
 public class MockScanner implements IScanner {
     Stack<String> stack;
     private AbstractProgram program;
+    private boolean isStop = false;
 
     /**
      *
@@ -32,6 +33,11 @@ public class MockScanner implements IScanner {
         }
     }
 
+    @Override
+    public boolean isStop() {
+        return isStop;
+    }
+
     /**
      *
      * @return the first item on the Stack. Null of program implements IStopable and user enters stop or
@@ -43,6 +49,10 @@ public class MockScanner implements IScanner {
         String pop = stack.pop();
         if (program instanceof IStopable && pop.equalsIgnoreCase("stop") ||
                 pop.equalsIgnoreCase("null")) {
+            if (pop.equalsIgnoreCase("stop")) {
+                isStop = true;
+            }
+
             return null;
         }
         return pop;

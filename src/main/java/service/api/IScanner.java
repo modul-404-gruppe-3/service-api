@@ -4,7 +4,9 @@ import java.time.LocalDate;
 import java.util.function.Predicate;
 
 public interface IScanner {
-     Double nextDouble(String invalidInputMessage);
+    boolean isStop();
+
+    Double nextDouble(String invalidInputMessage);
 
     Integer nextInteger(String invalidInputMessage);
 

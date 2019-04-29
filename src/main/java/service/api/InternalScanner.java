@@ -14,6 +14,7 @@ import java.util.function.Predicate;
 public class InternalScanner implements IScanner {
     private final Scanner scanner;
     private final AbstractProgram IProgram;
+    private boolean isStop = false;
 
     /**
      *
@@ -25,17 +26,37 @@ public class InternalScanner implements IScanner {
         this.IProgram = IProgram;
     }
 
+    @Override
+    public boolean isStop() {
+        return isStop;
+    }
+
+    /**
+     * if the p2.api.IExecutable class implements the IStopable Interface is true, "stop" can not be used as a input string because it is used to stop the p2.api.IExecutable.
+     * @return the next String that the User put in the Console.
+     */
+    public String next() {
+        String next = scanner.next();
+        if (IProgram instanceof IStopable) {
+            if (next.equalsIgnoreCase("stop")) {
+                ((IStopable) this.IProgram).stop();
+                isStop = true;
+                return null;
+            }
+        }
+        return next;
+    }
+
     /**
      * @param invalidInputMessage message that gets sent if the enterd value is invalid.
      * @return returns the next Double that is entered.
      */
     public Double nextDouble(String invalidInputMessage) {
         while (true) {
-            var r = scanner.next();
-            if (IProgram instanceof IStopable && r.equalsIgnoreCase("stop")) {
-                IStopable program = (IStopable) this.IProgram;
-                program.stop();
-                break;
+            var r = this.next();
+
+            if (r == null) {
+                return null;
             }
 
             try {
@@ -44,7 +65,6 @@ public class InternalScanner implements IScanner {
                 System.out.println(invalidInputMessage + "\n" + ex.getMessage());
             }
         }
-        return null;
     }
 
 
@@ -54,11 +74,10 @@ public class InternalScanner implements IScanner {
      */
     public Integer nextInteger(String invalidInputMessage) {
         while (true) {
-            var r = scanner.next();
-            if (IProgram instanceof IStopable && r.equalsIgnoreCase("stop")) {
-                IStopable program = (IStopable) this.IProgram;
-                program.stop();
-                break;
+            var r = this.next();
+
+            if (r == null) {
+                return null;
             }
 
             try {
@@ -67,11 +86,10 @@ public class InternalScanner implements IScanner {
                 System.out.println(invalidInputMessage + "\n" + ex.getMessage());
             }
         }
-        return null;
     }
 
     /**
-     * if IStopable is Implemented in the p2.api.IProgram and the user enters stop the program will continue and return null.
+     * if IStopable is Implemented in the p2.api.IExecutable and the user enters stop the program will continue and return null.
      *
      * @param invalidInputMessage message that gets sent if the enterd value is invalid.
      * @param validate this Method will be run to validate the returned value, if this method returns true the value
@@ -116,7 +134,7 @@ public class InternalScanner implements IScanner {
     public Integer nextInteger(String invalidInputMessage, Predicate<Integer> validate, String... possibleMatches) {
         while (true) {
             Integer t = nextInteger(invalidInputMessage);
-            if (t == null || (validate.test(t)) && Arrays.asList(possibleMatches).contains(t)) {
+            if (t == null || (validate.test(t)) && (Arrays.asList(possibleMatches).contains(t+""))) {
                 return t;
             }else {
                 System.out.println(invalidInputMessage);
@@ -142,22 +160,6 @@ public class InternalScanner implements IScanner {
 
 
     /**
-     * if the p2.api.IProgram class implements the IStopable Interface is true, "stop" can not be used as a input string because it is used to stop the p2.api.IProgram.
-     * @return the next String that the User put in the Console.
-     */
-    public String next() {
-        String next = scanner.next();
-        if (IProgram instanceof IStopable) {
-            if (next.equalsIgnoreCase("stop")) {
-                IStopable program = (IStopable) this.IProgram;
-                program.stop();
-                return null;
-            }
-        }
-        return next;
-    }
-
-    /**
      * @param invalidInputMessage the message that will be sent when the wrong input is sent.
      * @param validate the function that will be called and if this function returns
      *                 true on the user input the value will be returned.
@@ -166,7 +168,8 @@ public class InternalScanner implements IScanner {
     public String next(String invalidInputMessage, Predicate<String> validate) {
         while (true) {
             String s = next();
-            if (validate.test(s)) {
+
+            if (s == null || validate.test(s)) {
                 return s;
             }else {
                 System.out.println(invalidInputMessage);
@@ -199,21 +202,16 @@ public class InternalScanner implements IScanner {
     /**
      * This Method is used for selection of a specific Option from a List of Options.
      *
-     * If the p2.api.IProgram implements the IStopable Interface stop will also be a valid input, even thoe the method will return null
+     * If the p2.api.IExecutable implements the IStopable Interface stop will also be a valid input, even thoe the method will return null
      *
      * @param invalidInputMessage will be sent if the user does not enter one of the Strings given with possibleMatches.
      * @param possibleMatches the user input will need to match one of this Strings.
      *
-     * @return the selected String, null if the p2.api.IProgram implements IStopable and the input is stop.
+     * @return the selected String, null if the p2.api.IExecutable implements IStopable and the input is stop.
      */
     public String next(String invalidInputMessage, String... possibleMatches) {
         while (true) {
-            var r = scanner.next();
-            if (IProgram instanceof IStopable && r.equalsIgnoreCase("stop")) {
-                IStopable program = (IStopable) this.IProgram;
-                program.stop();
-                break;
-            }
+            var r = this.next();
 
             if (Arrays.asList(possibleMatches).contains(r)) {
                 return r;
@@ -221,7 +219,6 @@ public class InternalScanner implements IScanner {
                 System.out.println(invalidInputMessage);
             }
         }
-        return null;
     }
 
 
@@ -233,14 +230,12 @@ public class InternalScanner implements IScanner {
     public LocalDate getDate(String pattern, String invalidInputMessage) {
         while (true) {
             try {
-                String next = scanner.next();
-                if (IProgram instanceof IStopable) {
-                    if (next.equalsIgnoreCase("stop")) {
-                        IStopable program = (IStopable) this.IProgram;
-                        program.stop();
-                        break;
-                    }
+                String next = this.next();
+
+                if (next == null) {
+                    return null;
                 }
+
                 return LocalDate.parse(
                         next,
                         DateTimeFormatter.ofPattern(pattern));
@@ -248,6 +243,5 @@ public class InternalScanner implements IScanner {
                 System.out.println(invalidInputMessage + "\n" + ex.getMessage());
             }
         }
-        return null;
     }
 }
