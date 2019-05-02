@@ -13,17 +13,17 @@ import java.util.function.Predicate;
  */
 public class InternalScanner implements IScanner {
     private final Scanner scanner;
-    private final AbstractProgram IProgram;
+    private final AbstractProgram abstractProgram;
     private boolean isStop = false;
 
     /**
      *
      * @param scanner the scanner object that will be used for all Operations in this Scanner
-     * @param IProgram the program that will be checked on for the IStopable Interface.
+     * @param abstractProgram the program that will be checked on for the IStopable Interface.
      */
-    public InternalScanner(Scanner scanner, AbstractProgram IProgram) {
+    public InternalScanner(Scanner scanner, AbstractProgram abstractProgram) {
         this.scanner = scanner;
-        this.IProgram = IProgram;
+        this.abstractProgram = abstractProgram;
     }
 
     @Override
@@ -37,9 +37,9 @@ public class InternalScanner implements IScanner {
      */
     public String next() {
         String next = scanner.next();
-        if (IProgram instanceof IStopable) {
+        if (abstractProgram instanceof IStopable) {
             if (next.equalsIgnoreCase("stop")) {
-                ((IStopable) this.IProgram).stop();
+                ((IStopable) this.abstractProgram).stop();
                 isStop = true;
                 return null;
             }
@@ -212,6 +212,10 @@ public class InternalScanner implements IScanner {
     public String next(String invalidInputMessage, String... possibleMatches) {
         while (true) {
             var r = this.next();
+
+            if (r == null) {
+                return null;
+            }
 
             if (Arrays.asList(possibleMatches).contains(r)) {
                 return r;

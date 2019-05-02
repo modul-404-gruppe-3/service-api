@@ -7,27 +7,22 @@ import lombok.Setter;
 import java.util.Scanner;
 
 public abstract class AbstractProgram {
+    @Getter(AccessLevel.PACKAGE)
     @Setter
-    @Getter(AccessLevel.PACKAGE)
-    private static IScanner staticScanner;
-    @Getter(AccessLevel.PACKAGE)
-    private IScanner currentScanner;
+    private static IScanner currentScanner;
 
-    public AbstractProgram() {
-        staticScanner = null;
-    }
-
+    public AbstractProgram() {}
 
     /**
      * this constructor is for unit tests so you can fake user inputs.
      */
-    public AbstractProgram(String... project) {
-        if (project == null) {
-            staticScanner = null;
+    public AbstractProgram(String... strings) {
+        if (strings == null) {
+            currentScanner = null;
             return;
         }
 
-        staticScanner = new MockScanner(this, project);
+        currentScanner = new MockScanner(this, strings);
     }
 
     /**
@@ -35,11 +30,11 @@ public abstract class AbstractProgram {
      */
     public AbstractProgram(MockScanner mockScanner) {
         if (mockScanner == null) {
-            staticScanner = null;
+            currentScanner = null;
             return;
         }
 
-        staticScanner = mockScanner;
+        currentScanner = mockScanner;
     }
 
 
@@ -56,11 +51,12 @@ public abstract class AbstractProgram {
      * @return
      */
     public IScanner getScanner() {
-        if (staticScanner == null) {
+        if (currentScanner == null || currentScanner instanceof InternalScanner) {
             currentScanner = new InternalScanner(new Scanner(System.in), this);
             return currentScanner;
         }else {
-            return staticScanner;
+            currentScanner = new MockScanner((MockScanner)currentScanner);
+            return currentScanner;
         }
     }
 }
