@@ -15,11 +15,10 @@ import java.util.function.Predicate;
 public class MockScanner implements IScanner {
     Stack<String> stack;
     private AbstractProgram program;
-    private boolean isStop;
 
 
-    public MockScanner(MockScanner scanner) {
-        this(scanner.program, reverseStack(scanner));
+    public MockScanner(AbstractProgram program, MockScanner scanner) {
+        this(program, reverseStack(scanner));
     }
 
     private static String[] reverseStack(MockScanner scanner) {
@@ -36,7 +35,6 @@ public class MockScanner implements IScanner {
      */
     public MockScanner(AbstractProgram program, String... objects) {
         this.program = program;
-        isStop = false;
         this.stack = new Stack<>();
         for (int i = objects.length - 1; i >= 0; i--) {
             if (objects[i] == null) {
@@ -45,11 +43,6 @@ public class MockScanner implements IScanner {
                 this.stack.push(objects[i]);
             }
         }
-    }
-
-    @Override
-    public boolean isStop() {
-        return isStop;
     }
 
     /**
@@ -62,13 +55,10 @@ public class MockScanner implements IScanner {
 
         String pop = stack.pop();
 
-
-
-
-        if (program instanceof IStopable && pop.equalsIgnoreCase("stop") ||
-                pop.equalsIgnoreCase("null")) {
+        if ((program instanceof IStopable && pop.equalsIgnoreCase("stop"))
+                ||  pop.equalsIgnoreCase("null")) {
             if (pop.equalsIgnoreCase("stop")) {
-                isStop = true;
+                program.setStop(true);
             }
             return null;
         }

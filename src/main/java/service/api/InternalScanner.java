@@ -14,7 +14,6 @@ import java.util.function.Predicate;
 public class InternalScanner implements IScanner {
     private final Scanner scanner;
     private final AbstractProgram abstractProgram;
-    private boolean isStop = false;
 
     /**
      *
@@ -26,11 +25,6 @@ public class InternalScanner implements IScanner {
         this.abstractProgram = abstractProgram;
     }
 
-    @Override
-    public boolean isStop() {
-        return isStop;
-    }
-
     /**
      * if the p2.api.IExecutable class implements the IStopable Interface is true, "stop" can not be used as a input string because it is used to stop the p2.api.IExecutable.
      * @return the next String that the User put in the Console.
@@ -40,7 +34,7 @@ public class InternalScanner implements IScanner {
         if (abstractProgram instanceof IStopable) {
             if (next.equalsIgnoreCase("stop")) {
                 ((IStopable) this.abstractProgram).stop();
-                isStop = true;
+                abstractProgram.setStop(true);
                 return null;
             }
         }
@@ -66,7 +60,6 @@ public class InternalScanner implements IScanner {
             }
         }
     }
-
 
     /**
      * @param invalidInputMessage message that gets sent if the enterd value is invalid.
